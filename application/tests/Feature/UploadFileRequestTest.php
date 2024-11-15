@@ -6,6 +6,7 @@ namespace Tests\Feature;
 // use Illuminate\Foundation\Testing\WithFaker;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class UploadFileRequestTest extends TestCase
@@ -15,6 +16,8 @@ class UploadFileRequestTest extends TestCase
     /** @test */
     public function it_validates_required_file_field()
     {
+        Storage::fake('s3');
+
         $response = $this->postJson(self::ENDPOINT, []);
 
         $response->assertStatus(422);
@@ -24,6 +27,8 @@ class UploadFileRequestTest extends TestCase
     /** @test */
     public function it_validates_file_type_extension()
     {
+        Storage::fake('s3');
+
         $response = $this->postJson(self::ENDPOINT, [
             'upload' => UploadedFile::fake()->create('file.pdf', 100),
         ]);
@@ -35,6 +40,8 @@ class UploadFileRequestTest extends TestCase
     /** @test */
     public function it_allows_valid_file_types()
     {
+        Storage::fake('s3');
+
         $response = $this->postJson(self::ENDPOINT, [
             'upload' => UploadedFile::fake()->create('file.xlsx', 100),
         ]);

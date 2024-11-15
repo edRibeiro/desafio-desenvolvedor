@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\FileExists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UploadFileRequest extends FormRequest
@@ -22,7 +23,7 @@ class UploadFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'upload' => ['required', 'file', 'extensions:xlsx,xls,csv'],
+            'upload' => ['required', 'file', 'extensions:xlsx,xls,csv', new FileExists('uploads', 's3')],
         ];
     }
 }

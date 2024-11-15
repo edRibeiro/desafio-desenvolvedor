@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadFileRequest;
+use App\Models\File;
 use Illuminate\Http\Response;
 
 class FileController extends Controller
@@ -21,6 +22,7 @@ class FileController extends Controller
             $file = $request->file('upload');
             $name = $file->getClientOriginalName();
             $path = $file->storeAs('uploads', $name, 's3');
+            File::create(['file_name' => $name, 'path' => $path]);
             return response()->json([
                 'message' => 'Arquivo enviado com sucesso!',
                 'original_name' => $name,
