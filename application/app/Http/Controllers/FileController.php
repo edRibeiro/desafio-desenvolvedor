@@ -17,6 +17,20 @@ class FileController extends Controller
 
     function upload(UploadFileRequest $request)
     {
-        return response()->json(["Uploaded!", Response::HTTP_CREATED]);
+        try {
+            $file = $request->file('upload');
+            $name = $file->getClientOriginalName();
+            $path = $file->storeAs('uploads', $name, 's3');
+            return response()->json([
+                'message' => 'Arquivo enviado com sucesso!',
+                'original_name' => $name,
+                'path' => $path,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar o upload.',
+                'details' => $th->getMessage(),
+            ], 500);
+        }
     }
 }
