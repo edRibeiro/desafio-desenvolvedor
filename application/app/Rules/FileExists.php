@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\File;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Storage;
@@ -25,8 +26,9 @@ class FileExists implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (Storage::disk($this->disk)->exists($this->folder . "/" . $value->getClientOriginalName())) {
-            $fail('O arquivo já existe no disco.');
+        $path = $this->folder . "/" . $value->getClientOriginalName();
+        if (File::where('path', $path)->exists() || Storage::disk($this->disk)->exists($path)) {
+            $fail('O arquivo já foi importado.');
         }
     }
 }

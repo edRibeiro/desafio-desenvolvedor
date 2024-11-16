@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
@@ -20,4 +21,9 @@ class File extends Model
      * @var array
      */
     protected $fillable = ['file_name', 'path'];
+
+    public function instrumentos(): HasMany
+    {
+        return $this->hasMany(Instrumento::class);
+    }
 }

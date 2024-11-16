@@ -5,17 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UploadFileRequest;
 use App\Imports\InstrumentosImport;
 use App\Models\File;
-use Illuminate\Http\Response;
+use App\Models\Instrumento;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
-class FileController extends Controller
+class InstrumentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    function index()
     {
-        //
+        return response()->json(Instrumento::all()->toArray());
     }
 
     function upload(UploadFileRequest $request)
@@ -24,8 +22,8 @@ class FileController extends Controller
             $file = $request->file('upload');
             $name = $file->getClientOriginalName();
             $path = $file->storeAs('uploads', $name, 's3');
-            $fileModel = File::create(['file_name' => $name, 'path' => $path]);
-            Excel::import(new InstrumentosImport($fileModel->id), $file);
+            File::create(['file_name' => $name, 'path' => $path]);
+            Excel::queueImport(new InstrumentosImport, $name, 's3');
             return response()->json([
                 'message' => 'Arquivo enviado com sucesso!',
                 'original_name' => $name,

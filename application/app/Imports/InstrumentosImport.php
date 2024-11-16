@@ -17,6 +17,9 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class InstrumentosImport implements ToModel, WithProgressBar, WithHeadingRow, WithBatchInserts, WithChunkReading, ShouldQueue, WithCustomCsvSettings
 {
     use Importable;
+
+    public function __construct(private int $fileId) {}
+
     /**
      * @param array $row
      *
@@ -25,16 +28,15 @@ class InstrumentosImport implements ToModel, WithProgressBar, WithHeadingRow, Wi
     public function model(array $row)
     {
         try {
-            // dd($row);
             $obj =
                 new Instrumento([
                     'RptDt' => $row['rptdt'],
                     'TckrSymb' => $row['tckrsymb'],
                     'SctyCtgyNm' => $row['sctyctgynm'],
                     'ISIN' => $row['isin'],
-                    'CrpnNm' => $row['crpnnm']
+                    'CrpnNm' => $row['crpnnm'],
+                    'file_id' => $this->fileId
                 ]);
-
             return $obj;
         } catch (\Exception $e) {
             Log::error('Erro ao importar linha: ', ['row' => $row, 'error' => $e->getMessage()]);
