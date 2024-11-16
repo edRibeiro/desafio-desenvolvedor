@@ -8,6 +8,7 @@ use App\Imports\InstrumentosImport;
 use App\Models\File;
 use App\Services\Files\FileServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FileController extends Controller
@@ -19,8 +20,15 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
-        $queryArray = SearchHelper::toArray($request->query('q'));
-        $files = $this->fileService->search($queryArray);
+        $cacheKey = 'files';
+        $query = $request->query('q');
+        if (!empty($query)) {
+            $cacheKey .= ':' . $query;
+        }
+        $files = Cache::remember($cacheKey, 300, function () use ($query) {
+            $queryArray = SearchHelper::toArray($query);
+            return $this->fileService->search($queryArray);
+        });
         return response()->json($files);
     }
 

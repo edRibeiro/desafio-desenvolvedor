@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UploadFileRequest;
-use App\Imports\InstrumentosImport;
-use App\Models\File;
-use App\Models\Instrumento;
+use App\Helpers\SearchHelper;
+use App\Services\Instrumentos\InstrumentoServiceInterface;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
 
 class InstrumentoController extends Controller
 {
-    function index()
+    public function __construct(private InstrumentoServiceInterface $service) {}
+
+    function index(Request $request)
     {
-        return response()->json(Instrumento::paginate()->toArray());
+        $cacheKey = 'instrumentos';
+        $query = $request->query('q');
+        if (!empty($query)) {
+            $cacheKey .= ':' . $query;
+        }
+
+        $instrumentos = Cache::remember($cacheKey, 300, function () use ($query) {
+            $queryArray = SearchHelper::toArray($query);
+            return  $this->service->search($queryArray);
+        });
+        return response()->json($instrumentos->toArray());
     }
 }
