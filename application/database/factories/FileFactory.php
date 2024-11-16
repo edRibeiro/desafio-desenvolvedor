@@ -17,7 +17,11 @@ class FileFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'file_name' => $this->faker->word,
+            'path' => '/files/' . $this->faker->word . '.csv',
+            'start_date' => $this->faker->date,
+            'end_date' => $this->faker->date,
+            'created_at' => now(),
         ];
     }
 }

@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SearchHelper;
 use App\Http\Requests\UploadFileRequest;
 use App\Imports\InstrumentosImport;
 use App\Models\File;
-use Illuminate\Http\Response;
+use App\Services\Files\FileServiceInterface;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FileController extends Controller
 {
+    public function __construct(private FileServiceInterface $fileService) {}
     /**
+     *
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $queryArray = SearchHelper::toArray($request->query('q'));
+        $files = $this->fileService->search($queryArray);
+        return response()->json($files);
     }
 
     function upload(UploadFileRequest $request)
@@ -24,7 +30,7 @@ class FileController extends Controller
             $file = $request->file('upload');
             $name = $file->getClientOriginalName();
             $path = $file->storeAs('uploads', $name, 's3');
-            $fileModel = File::create(['file_name' => $name, 'path' => $path]);
+            $fileModel = $this->fileService->saveFileName($name, $path);
             Excel::import(new InstrumentosImport($fileModel->id), $file);
             return response()->json([
                 'message' => 'Arquivo enviado com sucesso!',

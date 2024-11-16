@@ -20,7 +20,7 @@ class File extends Model
      *
      * @var array
      */
-    protected $fillable = ['file_name', 'path'];
+    protected $fillable = ['file_name', 'path', 'start_date', 'end_date'];
 
     public function instrumentos(): HasMany
     {

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('rptdt');
             $table->string('tckrsymb');
             $table->string('sctyctgynm')->nullable();
-            $table->string('isin');
+            $table->string('isin')->nullable();
             $table->string('crpnnm')->nullable();
             $table->softDeletes();
             $table->timestamps();
