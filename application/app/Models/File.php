@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
     /** @use HasFactory<\Database\Factories\FileFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $connection = 'mongodb';
-
-    protected $collection = 'files';
+    protected $connection = 'mysql';
+    protected $mysql = 'files';
 
     /**
      * The attributes that are mass assignable.

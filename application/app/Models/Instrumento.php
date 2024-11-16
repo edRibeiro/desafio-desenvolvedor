@@ -2,23 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Instrumento extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+    use HasFactory, SoftDeletes;
 
-    protected $connection = 'mongodb';
-
-    protected $collection = 'instrumentos';
+    protected $connection = 'mysql';
+    protected $table = 'instrumentos';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['file_name', 'path'];
+    protected $fillable = [
+        'RptDt',
+        'TckrSymb',
+        'SctyCtgyNm',
+        'ISIN',
+        'CrpnNm'
+    ];
 }
