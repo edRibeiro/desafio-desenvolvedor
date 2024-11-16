@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InstrumentoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,8 +9,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('files')->group(function () {
-    Route::controller(FileController::class)->group(function () {
-        Route::post('/upload', 'upload');
-    });
+Route::post('/files/upload', [FileController::class, 'upload']);
+
+
+Route::controller(InstrumentoController::class)->group(function () {
+    Route::get('/instruments', 'index');
 });
